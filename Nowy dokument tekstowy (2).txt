@@ -1,0 +1,81 @@
+#include "xc.h"
+
+// Definicje przycisków
+#define S3 PORTEbits.RE7
+#define S6 PORTEbits.RE6
+
+// Definicje wyjść
+#define LED1 LATAbits.LATA0
+#define LED2 LATAbits.LATA1
+
+// Opóźnienie w ms używane do efektu migania diodami
+#define DELAY_MS 250
+
+// Funkcja obsługująca podprogram 1 - 8-bitowy licznik binarny zliczający w górę
+void program1() {
+    static uint8_t counter = 0;
+    counter++;
+    LATB = counter;
+}
+
+// Funkcja obsługująca podprogram 2 - 8-bitowy licznik binarny zliczający w dół
+void program2() {
+    static uint8_t counter = 255;
+    counter--;
+    LATB = counter;
+}
+
+// Funkcja pomocnicza zamieniająca liczbę z systemu dziesiętnego na kod Graya
+uint8_t decimalToGray(uint8_t num) {
+    return (num >> 1) ^ num;
+}
+
+// Funkcja obsługująca podprogram 3 - 8-bitowy licznik w kodzie Graya zliczający w górę
+void program3() {
+    static uint8_t counter = 0;
+    counter++;
+    LATB = decimalToGray(counter);
+}
+
+// Funkcja pomocnicza zamieniająca liczbę w kodzie Graya na system dziesiętny
+uint8_t grayToDecimal(uint8_t num) {
+    uint8_t result = num ^ (num >> 1);
+    result ^= (result >> 2);
+    result ^= (result >> 4);
+    return result;
+}
+
+// Funkcja obsługująca podprogram 4 - 8-bitowy licznik w kodzie Graya zliczający w dół
+void program4() {
+    static uint8_t counter = 255;
+    counter--;
+    LATB = grayToDecimal(counter);
+}
+
+// Funkcja pomocnicza zamieniająca liczbę dziesiętną na kod BCD
+uint8_t decimalToBCD(uint8_t num) {
+    return ((num / 10) << 4) | (num % 10);
+}
+
+// Funkcja obsługująca podprogram 5 - 2x4 bitowy licznik w kodzie BCD zliczający w górę
+void program5() {
+    static uint8_t counter = 0;
+    counter++;
+    LATB = decimalToBCD(counter);
+}
+
+// Funkcja obsługująca podprogram 6 - 2x4 bitowy licznik w kodzie BCD zliczający w dół
+void program6() {
+    static uint8_t counter = 99;
+    counter--;
+    LATB = decimalToBCD(counter);
+}
+
+// Funkcja obsługująca podprogram 7 - 3 bitowy wężyk poruszający się lewo-prawo
+void program7() {
+    static uint8_t pattern = 0b000001;
+    LATB = pattern;
+    pattern = (pattern << 1) | ((pattern >> 2) & 0b000001);
+}
+
+// Funkcja obsługująca
