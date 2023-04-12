@@ -1,15 +1,98 @@
-int liczba = 10; // przykładowa liczba całkowita
-int binarna[32]; // tablica binarna do przechowywania wyniku
-int i = 0; // indeks tablicy binarnej
+#include <xc.h>
 
-// konwersja na system binarny
-while(liczba > 0) {
-    binarna[i] = liczba % 2;
-    liczba = liczba / 2;
-    i++;
+// definicje stałych reprezentujących poszczególne programy
+#define PROGRAM_1 1
+#define PROGRAM_2 2
+#define PROGRAM_3 3
+#define PROGRAM_4 4
+#define PROGRAM_5 5
+#define PROGRAM_6 6
+#define PROGRAM_7 7
+#define PROGRAM_8 8
+#define PROGRAM_9 9
+
+// deklaracje funkcji pomocniczych
+void program_1();
+void program_2();
+void program_3();
+void program_4();
+void program_5();
+void program_6();
+void program_7();
+void program_8();
+void program_9();
+
+int main() {
+    // inicjalizacja portów wejściowych dla przycisków S3 i S6
+    TRISBbits.TRISB7 = 1; // S3
+    TRISBbits.TRISB8 = 1; // S6
+    
+    // inicjalizacja portów wyjściowych dla diod LED
+    TRISAbits.TRISA0 = 0; // LED1
+    TRISAbits.TRISA1 = 0; // LED2
+    TRISAbits.TRISA2 = 0; // LED3
+    
+    // zmienna przechowująca numer aktualnie wykonywanego programu
+    int current_program = PROGRAM_1;
+    
+    while(1) {
+        // wykrycie wciśnięcia przycisku S3
+        if(PORTBbits.RB7 == 0) {
+            // przejdź do następnego programu
+            current_program++;
+            
+            // jeśli przekroczono ostatni program, przejdź do pierwszego
+            if(current_program > PROGRAM_9) {
+                current_program = PROGRAM_1;
+            }
+        }
+        
+        // wykrycie wciśnięcia przycisku S6
+        if(PORTBbits.RB8 == 0) {
+            // przejdź do poprzedniego programu
+            current_program--;
+            
+            // jeśli przekroczono pierwszy program, przejdź do ostatniego
+            if(current_program < PROGRAM_1) {
+                current_program = PROGRAM_9;
+            }
+        }
+        
+        // wykonanie aktualnie wybranego programu
+        switch(current_program) {
+            case PROGRAM_1:
+                program_1();
+                break;
+            case PROGRAM_2:
+                program_2();
+                break;
+            case PROGRAM_3:
+                program_3();
+                break;
+            case PROGRAM_4:
+                program_4();
+                break;
+            case PROGRAM_5:
+                program_5();
+                break;
+            case PROGRAM_6:
+                program_6();
+                break;
+            case PROGRAM_7:
+                program_7();
+                break;
+            case PROGRAM_8:
+                program_8();
+                break;
+            case PROGRAM_9:
+                program_9();
+                break;
+        }
+    }
 }
 
-// wyświetlenie wyniku w odwrotnej kolejności
-for(int j = i - 1; j >= 0; j--) {
-    printf("%d", binarna[j]);
+void program1() {
+    static uint8_t counter = 0;
+    counter++;
+    LATB = counter;
 }
