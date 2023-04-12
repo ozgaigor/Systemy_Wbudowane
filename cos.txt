@@ -1,0 +1,95 @@
+#include <xc.h>
+
+// Definicje pinów
+#define S3 PORTBbits.RB2
+#define S6 PORTBbits.RB3
+
+// Definicje podprogramów
+void program1();
+void program2();
+void program3();
+void program4();
+void program5();
+void program6();
+void program7();
+void program8();
+void program9();
+
+// Zmienna przechowująca numer obecnego podprogramu
+int current_program = 1;
+
+int main() {
+    // Konfiguracja pinów jako wejścia z pull-up
+    TRISBbits.TRISB2 = 1;
+    TRISBbits.TRISB3 = 1;
+    CNPUBbits.CNPUB2 = 1;
+    CNPUBbits.CNPUB3 = 1;
+    
+    // Nieskończona pętla programu
+    while (1) {
+        // Obsługa przycisku S3 - przejście do następnego podprogramu
+        if (!S3) {
+            current_program++;
+            if (current_program > 9) {
+                current_program = 1;
+            }
+        }
+        
+        // Obsługa przycisku S6 - przejście do poprzedniego podprogramu
+        if (!S6) {
+            current_program--;
+            if (current_program < 1) {
+                current_program = 9;
+            }
+        }
+        
+        // Wywołanie odpowiedniego podprogramu na podstawie numeru
+        switch (current_program) {
+            case 1:
+                program1();
+                break;
+            case 2:
+                program2();
+                break;
+            case 3:
+                program3();
+                break;
+            case 4:
+                program4();
+                break;
+            case 5:
+                program5();
+                break;
+            case 6:
+                program6();
+                break;
+            case 7:
+                program7();
+                break;
+            case 8:
+                program8();
+                break;
+            case 9:
+                program9();
+                break;
+        }
+    }
+}
+
+// Implementacje poszczególnych podprogramów
+
+void program1() {
+    // 8 bitowy licznik binarny zliczający w górę (0...255)
+    // Implementacja z użyciem zmiennej uint8_t
+    static uint8_t counter = 0;
+    counter++;
+    // Do obsługi wyjścia należy użyć np. funkcji digitalWrite()
+}
+
+void program2() {
+    // 8 bitowy licznik binarny zliczający w dół (255...0)
+    // Implementacja z użyciem zmiennej uint8_t
+    static uint8_t counter = 255;
+    counter--;
+    // Do obsługi wyjścia należy użyć np. funkcji digitalWrite()
+}
