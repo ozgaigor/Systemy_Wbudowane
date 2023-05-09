@@ -1,0 +1,270 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
+#include <stdbool.h>
+#include <libpic30.h>
+#include "app.h"
+
+#define FCY 4000000ULL
+#define ONE_VOLT 310
+#define ONE_TENTH_VOLT 31
+#define ONE_HUNDREDTH_VOLT 3
+
+void Update_LCD ( void ) ;
+void SYS_Initialize ( void ) ;
+extern void ConvertADCVoltage ( unsigned int  ) ;
+extern void Hex2Dec ( unsigned char ) ;
+
+APP_DATA appData = {
+                    .messageLine1 = "Zadanie 1 NN&AO " ,
+                    .messageLine2 = "Press S3 = start" ,
+                    .messageTime = "Time 00: 00: 00" ,
+                    .messageADC = " PROGRAM: NR0    "
+} ;
+   
+void first(int state)
+{
+    APP_DATA appData = 
+    {
+                    .messageLine1 = "Zadanie 1 NN&AO " ,
+                    .messageLine2 = "Press S3 = start"
+    };
+    LCD_PutString ( (char*) &appData.messageLine1[0] , sizeof (appData.messageLine1 ) - 1  ) ;
+    LCD_PutString ( (char*) &appData.messageLine2[0] , sizeof (appData.messageLine2 ) - 1  ) ;
+}
+
+int main ( void )
+{
+    SYS_Initialize ( ) ;
+
+    LCD_PutString ( (char*) &appData.messageLine1[0] , sizeof (appData.messageLine1 ) - 1  ) ;
+    LCD_PutString ( (char*) &appData.messageLine2[0] , sizeof (appData.messageLine2 ) - 1  ) ;
+
+    while (!BUTTON_IsPressed ( BUTTON_S3 )) ;
+
+    TIMER_SetConfiguration ( TIMER_CONFIGURATION_RTCC ) ;
+
+    ADC_SetConfiguration ( ADC_CONFIGURATION_AUTO_SAMPLE_CONVERT ) ;
+ 
+    LCD_PutString ( (char*) &appData.messageTime[0] , sizeof (appData.messageTime ) - 1 ) ;
+    LCD_PutString ( (char*) &appData.messageADC[0] , sizeof (appData.messageADC ) - 1 ) ;
+
+//    LED_Enable(LED_D3);
+//    LED_Enable(LED_D4);
+//    LED_Enable(LED_D5);
+//    LED_Enable(LED_D6);
+//    LED_Enable(LED_D7);
+//    LED_Enable(LED_D8);
+//    LED_Enable(LED_D9);
+//    LED_Enable(LED_D10);
+  
+    int i = 0;
+    int state = 0;
+
+    while ( 1 )
+    {
+        if ( appData.rtc_lcd_update )
+        {
+            Hex2Dec ( appData.hours ) ;
+            Update_LCD ( ) ;
+            appData.rtc_lcd_update = 0 ;
+            i++;
+            if ( appData.adc_lcd_update )
+        {          
+                ConvertADCVoltage ( appData.temp1 ) ;
+                LCD_PutChar ( ' ' ) ;
+                LCD_PutChar ( 'R' ) ;
+                LCD_PutChar ( 'E' ) ;
+                LCD_PutChar ( 'K' ) ;
+                LCD_PutChar ( 'L' ) ;
+                LCD_PutChar ( 'A' ) ;
+                LCD_PutChar ( 'M' ) ;
+                LCD_PutChar ( 'A' ) ;
+                LCD_PutChar ( ':' ) ;
+                LCD_PutChar ( ' ' ) ;
+                LCD_PutChar ( 'N' ) ;
+                LCD_PutChar ( 'R' ) ;
+                LCD_PutChar ( state+'0' ) ;
+                LCD_PutChar ( ' ' ) ;
+                LCD_PutChar ( ' ' ) ;
+                LCD_PutChar ( ' ' ) ;
+                LCD_PutChar ( ' ' ) ;
+                appData.adc_lcd_update = 0 ;
+    }
+           i++;
+        {
+            if (state < 6) 
+                {
+                    switch (state)
+                    {
+                    case 0:
+                        first(state);
+                        break;
+//                    case 1:
+//                        Binary_down(&value);
+//                        break;
+//                    case 2:
+//                        Gray_up(&value);
+//                        break;
+//                    case 3:
+//                        Gray_down(&value);
+//                        break;
+//                    case 4:
+//                        BCD_up(&value);
+//                        break;
+//                    case 5:
+//                        BCD_down(&value);
+//                        break;
+//                    }
+                }
+                        
+        bool next = false;
+        bool prev = false;
+        
+        if(BUTTON_IsPressed(BUTTON_S3))
+            prev = true;
+        if(BUTTON_IsPressed(BUTTON_S6))
+            next = true;
+        if(next){
+            state += 1;
+        }
+
+        if(prev){
+            state -= 1;
+        }
+
+        if(state < 0)
+            state = 8;
+        if(state > 5)
+            state = 0;
+            
+            }
+        }
+    } 
+}
+}
+
+
+void Update_LCD ( void )
+{
+//    LCD_PutChar ( 'C' ) ;
+//    LCD_PutChar ( 'Z' ) ;
+//    LCD_PutChar ( 'A' ) ;
+//    LCD_PutChar ( 'S' ) ;
+//    LCD_PutChar ( ' ' ) ;
+//    LCD_PutChar ( 'N' ) ;
+//    LCD_PutChar ( 'A' ) ;
+//    LCD_PutChar ( ' ' ) ;
+//    LCD_PutChar ( 'S' ) ;
+//    LCD_PutChar ( 'R' ) ;
+//    LCD_PutChar ( 'A' ) ;
+//    LCD_PutChar ( 'N' ) ;
+//    LCD_PutChar ( 'I' ) ;
+//    LCD_PutChar ( 'E' ) ;
+//    LCD_PutChar ( ' ' ) ;
+    
+//    LCD_PutChar ( appData.tens + 0x30 ) ;
+//    LCD_PutChar ( appData.ones + 0x30 ) ;
+
+//    Hex2Dec ( appData.minutes ) ;
+//    LCD_PutChar ( ':' ) ;
+//    LCD_PutChar ( ' ' ) ;
+//    LCD_PutChar ( appData.tens + 0x30 ) ;
+//    LCD_PutChar ( appData.ones + 0x30 ) ;
+
+//    Hex2Dec ( appData.seconds ) ;
+//    LCD_PutChar ( ':' ) ;
+//    LCD_PutChar ( ' ' ) ;
+//    LCD_PutChar ( appData.tens + 0x30 ) ;
+//    LCD_PutChar ( appData.ones + 0x30 ) ;
+
+}
+
+void ConvertADCVoltage ( unsigned int adc_conv_data )
+{
+    appData.adones = 0 ;
+    appData.adtens = 0 ;
+    appData.adhunds = 0 ;
+    appData.adthous = 0 ;
+
+    while ( adc_conv_data > 0 )
+    {
+        if ( adc_conv_data > ( ONE_VOLT - 1 ) )
+        {
+            appData.adones++ ;
+            adc_conv_data -= ONE_VOLT ;
+        }
+
+        else if ( adc_conv_data > ( ONE_TENTH_VOLT - 1 ) )
+        {
+            if ( appData.adtens < 9 )
+            {
+                appData.adtens++ ;
+            }
+            else
+            {
+                appData.adones++ ;
+                appData.adtens = 0 ;
+            }
+
+            adc_conv_data -= ONE_TENTH_VOLT ;
+        }
+        
+        else if ( adc_conv_data > ( ONE_HUNDREDTH_VOLT - 1 ) )
+        {
+            if ( appData.adhunds < 9 )
+            {
+                appData.adhunds++ ;
+            }
+            else
+            {
+                appData.adtens++ ;
+                appData.adhunds = 0 ;
+            }
+
+            adc_conv_data -= ONE_HUNDREDTH_VOLT ;
+        }
+
+        else if ( adc_conv_data <= ( ONE_HUNDREDTH_VOLT - 1 ) )
+        {
+            appData.adthous++ ;
+            adc_conv_data -- ;
+        }
+    }
+    
+    appData.adones += 0x30 ;
+    appData.adtens += 0x30 ;
+    appData.adhunds += 0x30 ;
+    appData.adthous += 0x30 ;
+}
+
+void Hex2Dec ( unsigned char count )
+{
+    appData.hunds = 0 ;
+    appData.tens  = 0 ;
+    appData.ones = 0 ;
+
+    while ( count >= 10 )
+    {
+
+        if ( count >= 200 )
+        {
+            count -= 200 ;
+            appData.hunds = 0x02 ;
+        }
+
+        if (count >= 100)
+        {
+            count -= 100 ;
+            appData.hunds++ ;
+        }
+
+        if (count >= 10 )
+        {
+            count -= 10 ;
+            appData.tens++ ;
+        }
+    }
+
+    appData.ones = count ;
+}
